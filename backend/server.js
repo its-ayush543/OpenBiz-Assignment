@@ -34,17 +34,26 @@ app.post('/api/step1', async (req, res) => {
 });
 
 // Step 2: PAN Validation + Save to DB
+// Step 2: PAN Validation + Save to DB
 app.post('/api/step2', async (req, res) => {
   try {
+    console.log("Step 2 payload:", req.body);
     await panSchema.validate(req.body, { abortEarly: false });
     const saved = await prisma.submission.create({
       data: req.body,
     });
     res.json({ message: 'PAN validated and saved', data: saved });
   } catch (err) {
-    res.status(400).json({ message: err.errors.join(', ') });
+    console.error(err);
+
+    if (err.name === 'ValidationError' && err.errors) {
+      res.status(400).json({ message: err.errors.join(', ') });
+    } else {
+      res.status(500).json({ message: err.message || 'Server error' });
+    }
   }
 });
+
 
 // Get All Submissions
 app.get('/api/submissions', async (req, res) => {
