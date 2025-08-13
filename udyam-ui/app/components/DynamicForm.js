@@ -23,6 +23,8 @@ export default function DynamicForm() {
     mode: 'onTouched',
   });
 
+  const apiBase = process.env.NEXT_PUBLIC_API_URL;
+
   const onSubmit = async (data) => {
     try {
       // For step 2, send step 1 data as well
@@ -31,7 +33,7 @@ export default function DynamicForm() {
         payload = { ...getValues(), ...data };
       }
 
-      const res = await fetch(`http://localhost:4000/api/step${step}`, {
+            const res = await fetch(`${apiBase}/api/step${step}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
