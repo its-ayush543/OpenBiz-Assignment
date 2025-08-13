@@ -11,7 +11,7 @@ const app = express();
 
 // CORS setup
 app.use(cors({
-  origin: process.env.CORS_ORIGIN?.split(',') || '*',
+  origin: 'https://open-biz-assignment.vercel.app',
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type']
 }));
