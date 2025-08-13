@@ -1,0 +1,77 @@
+{
+  "steps": [
+    {
+      "title": "Aadhaar Verification With OTP",
+      "fields": [
+        {
+          "name": "aadhaarNumber",
+          "label": "Aadhaar Number",
+          "type": "text",
+          "required": true,
+          "validation": {
+            "regex": "^[0-9]{12}$"
+          }
+        },
+        {
+          "name": "nameAsPerAadhaar",
+          "label": "Name (as per Aadhaar)",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "consent",
+          "label": "Consent to use Aadhaar",
+          "type": "checkbox",
+          "required": true
+        }
+      ],
+      "actions": [
+        {
+          "type": "button",
+          "label": "Validate & Generate OTP"
+        }
+      ]
+    },
+    {
+      "title": "PAN Verification",
+      "fields": [
+        {
+          "name": "pan",
+          "label": "PAN",
+          "type": "text",
+          "required": true,
+          "validation": {
+            "regex": "^[A-Z]{5}[0-9]{4}[A-Z]{1}$"
+          }
+        },
+        {
+          "name": "itrFiled",
+          "label": "ITR Filed?",
+          "type": "select",
+          "options": [
+            "Yes",
+            "No"
+          ],
+          "required": true
+        },
+        {
+          "name": "gstRegistered",
+          "label": "GST Registered?",
+          "type": "select",
+          "options": [
+            "Yes",
+            "No"
+          ],
+          "required": true
+        }
+      ],
+      "actions": [
+        {
+          "type": "button",
+          "label": "Verify PAN"
+        }
+      ]
+    }
+  ],
+  "source": "https://udyamregistration.gov.in/UdyamRegistration.aspx"
+}
