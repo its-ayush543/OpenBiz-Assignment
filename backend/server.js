@@ -9,10 +9,19 @@ dotenv.config();
 const prisma = new PrismaClient();
 const app = express();
 
-app.use(cors({ origin: process.env.CORS_ORIGIN }));
+// CORS setup
+app.use(cors({
+  origin: process.env.CORS_ORIGIN?.split(',') || '*',
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type']
+}));
+
 app.use(express.json());
 
-// ------------------- Routes -------------------
+// Root health check
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', message: 'Backend is running 🚀' });
+});
 
 // Step 1: Aadhaar Validation
 app.post('/api/step1', async (req, res) => {
@@ -49,7 +58,7 @@ app.get('/api/submissions', async (req, res) => {
   }
 });
 
-// ------------------- Server Start -------------------
+// Start server
 app.listen(process.env.PORT || 4000, () => {
   console.log(`✅ Backend running on port ${process.env.PORT || 4000}`);
 });
