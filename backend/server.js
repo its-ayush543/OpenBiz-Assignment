@@ -9,18 +9,40 @@ dotenv.config();
 const prisma = new PrismaClient();
 const app = express();
 
-// CORS setup
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://open-biz-assignment.vercel.app'
+]
+
+
+
+// Improved CORS setup
 app.use(cors({
   origin: 'https://open-biz-assignment.vercel.app',
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type']
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
+  optionsSuccessStatus: 200,
+  credentials: true
 }));
 
 app.use(express.json());
 
+// Handle preflight requests
+app.options('*', cors());
+
 // Root health check
 app.get('/', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is running 🚀' });
+});
+
+// Database health check
+app.get('/health', async (req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.status(200).send('DB Connected');
+  } catch (e) {
+    res.status(500).send('DB Connection Failed');
+  }
 });
 
 // Step 1: Aadhaar Validation
@@ -34,7 +56,6 @@ app.post('/api/step1', async (req, res) => {
 });
 
 // Step 2: PAN Validation + Save to DB
-// Step 2: PAN Validation + Save to DB
 app.post('/api/step2', async (req, res) => {
   try {
     console.log("Step 2 payload:", req.body);
@@ -45,7 +66,6 @@ app.post('/api/step2', async (req, res) => {
     res.json({ message: 'PAN validated and saved', data: saved });
   } catch (err) {
     console.error(err);
-
     if (err.name === 'ValidationError' && err.errors) {
       res.status(400).json({ message: err.errors.join(', ') });
     } else {
@@ -53,7 +73,6 @@ app.post('/api/step2', async (req, res) => {
     }
   }
 });
-
 
 // Get All Submissions
 app.get('/api/submissions', async (req, res) => {
@@ -68,6 +87,7 @@ app.get('/api/submissions', async (req, res) => {
 });
 
 // Start server
-app.listen(process.env.PORT || 4000, () => {
-  console.log(`✅ Backend running on port ${process.env.PORT || 4000}`);
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`✅ Backend running on port ${PORT}`);
 });
